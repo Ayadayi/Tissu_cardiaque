@@ -1,14 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://b30x3j3xwxhbw"]
+[gd_scene load_steps=2 format=3 uid="uid://btsmp3sf0cnvk"]
 
-[ext_resource type="Script" uid="uid://8xh4pnwr84g7" path="res://dessinateur_points.gd" id="1_wtcfe"]
+[ext_resource type="Script" uid="uid://dtuua2rm1uh3a" path="res://control.gd" id="1_wtcfe"]
 
 [node name="Node2D" type="Node2D"]
 
-[node name="Cadre" type="TextureRect" parent="."]
+[node name="TextureRect" type="TextureRect" parent="."]
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="DessinateurPoints" type="Control" parent="Cadre"]
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0

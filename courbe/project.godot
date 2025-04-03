@@ -10,6 +10,7 @@ config_version=5
 
 [application]
 
-config/name="courbe"
+config/name="Courbe"
+run/main_scene="uid://btsmp3sf0cnvk"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
