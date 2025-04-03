@@ -14,15 +14,15 @@ func _ready():
 	queue_redraw()
 
 	# Exemple d'ajout de points manuellement à partir du tableau
-	# Ajouter des points (remplacer par vos propres coordonnées)
-	points.append(Vector2(50, height / 2))  # Exemple de point (50, y)
-	points.append(Vector2(70, height / 2 - 70))  # Exemple de point (50, y)
+	# Ajouter des points 
+	points.append(Vector2(50, height / 2))  
+	points.append(Vector2(70, height / 2 - 70))  
 	points.append(Vector2(90, height / 2 - 90))
 	points.append(Vector2(110, height / 2 - 110))
 	points.append(Vector2(130, 190))
-	points.append(Vector2(150, height / 2 - 50))  # Exemple de point (150, y)
-	points.append(Vector2(250, height / 2 + 50))  # Exemple de point (250, y)
-	points.append(Vector2(350, height / 2))  # Exemple de point (350, y)
+	points.append(Vector2(150, height / 2 - 50)) 
+	points.append(Vector2(250, height / 2 + 50)) 
+	points.append(Vector2(350, height / 2)) 
 
 
 func _draw():
