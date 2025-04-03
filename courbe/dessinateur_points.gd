@@ -25,3 +25,4 @@ func _draw():
 func _on_resized():
 	# Redessine les points lorsque la taille change
 	queue_redraw()
+	### comment 
