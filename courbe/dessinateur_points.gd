@@ -42,3 +42,4 @@ func _draw():
 	# Dessiner les points sans les relier
 	for point in points_sinusoidaux:
 		draw_circle(point, 5, Color(1, 0, 0))  # Afficher chaque point sous forme de cercle rouge de rayon 5
+###
