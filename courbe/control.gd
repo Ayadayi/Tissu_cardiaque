@@ -30,24 +30,20 @@ func _draw():
 	var center_y = height / 2.0  # Position centrale
 
 	# Dessiner les axes X et Y
-	# Axe des ordonnées (Y)
 	draw_line(Vector2(50, 0), Vector2(50, height), Color(0, 0, 0), 2)  # L'axe Y
-	# Axe des abscisses (X)
 	draw_line(Vector2(0, height), Vector2(width, height), Color(0, 0, 0), 2)  # L'axe X
-
-	# Dessiner les points de la courbe
 	
 
 	# Dessiner les points saisis
 	for point in points:
-		draw_circle(point, POINT_SIZE, Color(0, 1, 0))  # Dessine les points en vert
+		draw_circle(point, POINT_SIZE, Color(0, 1, 0)) 
 
-	# Optionnel : Ajouter des repères (graduations) sur l'axe des abscisses
+	# Ajouter des graduations sur l'axe des abscisses
 	for i in range(0, RESOLUTION, int(RESOLUTION / 10)):
 		var x = i / float(RESOLUTION) * width
 		draw_line(Vector2(x, height - 5), Vector2(x, height + 5), Color(0, 0, 0), 2)  # Repères sur l'axe des X
 
-	# Optionnel : Ajouter des repères sur l'axe des ordonnées
+	# Ajouter des repères sur l'axe des ordonnées
 	for i in range(0, height, int(height / 10)):
 		draw_line(Vector2(45, i), Vector2(55, i), Color(0, 0, 0), 2)  # Repères sur l'axe des Y
 
