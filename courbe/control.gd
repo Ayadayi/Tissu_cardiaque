@@ -20,6 +20,7 @@ func _ready():
 	points.append(Vector2(350, height / 2)) 
 	
 	
+	
 func _draw():
 	# Dessiner les axes X et Y
 	draw_line(Vector2(50, 0), Vector2(50, height), Color(0, 0, 0), 2)  # L'axe Y
@@ -44,7 +45,7 @@ func _draw():
 
 	# Ajouter des graduations sur l'axe des abscisses X
 	for i in range(0, RESOLUTION, int(RESOLUTION / 10)):
-		var x = i / float(RESOLUTION) * width
+		var x = i / float(RESOLUTION) * width - 10
 		draw_line(Vector2(x, height - 5), Vector2(x, height + 5), Color(0, 0, 0), 2)  # Repères sur l'axe des X
 
 	# Ajouter des repères sur l'axe des ordonnées Y
