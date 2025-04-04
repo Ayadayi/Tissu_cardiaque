@@ -5,12 +5,11 @@ const POINT_SIZE := 3  # Taille des points
 var width := 600
 var height := 400
 
-# Tableau pour stocker les points (chaque point est un Vector2)
+# tableau pour stocker les points (chaque point est un Vector2)
 var points : Array = []
 
 func _ready():
-	# Ajout de points manuellement à partir du tableau
-	# Ajouter des points 
+	# ajouter des points 
 	points.append(Vector2(50, height / 2))  
 	points.append(Vector2(70, height / 2 - 70))  
 	points.append(Vector2(90, height / 2 - 90))
@@ -43,12 +42,12 @@ func _draw():
 	draw_circle(get_min_point(), POINT_SIZE + 2, Color(1, 0, 0))
 
 
-	# Ajouter des graduations sur l'axe des abscisses
+	# Ajouter des graduations sur l'axe des abscisses X
 	for i in range(0, RESOLUTION, int(RESOLUTION / 10)):
 		var x = i / float(RESOLUTION) * width
 		draw_line(Vector2(x, height - 5), Vector2(x, height + 5), Color(0, 0, 0), 2)  # Repères sur l'axe des X
 
-	# Ajouter des repères sur l'axe des ordonnées
+	# Ajouter des repères sur l'axe des ordonnées Y
 	for i in range(0, height, int(height / 10)):
 		draw_line(Vector2(45, i), Vector2(55, i), Color(0, 0, 0), 2)  # Repères sur l'axe des Y
 		
