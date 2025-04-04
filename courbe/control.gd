@@ -29,11 +29,19 @@ func _draw():
 
 	# Dessiner les points saisis
 	for point in points:
-		draw_circle(point, POINT_SIZE, Color(0, 1, 0)) 
+		draw_circle(point, POINT_SIZE, Color.BLACK)
+
 		
 	# Relier les points entre eux
 	for i in range(points.size() - 1):
-		draw_line(points[i], points[i+1], Color(0, 0, 0), 2)
+		draw_line(points[i], points[i + 1], Color.BLACK, 2)
+		
+	# Point le plus haut en vert
+	draw_circle(get_max_point(), POINT_SIZE + 2, Color(0, 1, 0))
+
+	# Point le plus bas en rouge
+	draw_circle(get_min_point(), POINT_SIZE + 2, Color(1, 0, 0))
+
 
 	# Ajouter des graduations sur l'axe des abscisses
 	for i in range(0, RESOLUTION, int(RESOLUTION / 10)):
@@ -43,3 +51,22 @@ func _draw():
 	# Ajouter des repères sur l'axe des ordonnées
 	for i in range(0, height, int(height / 10)):
 		draw_line(Vector2(45, i), Vector2(55, i), Color(0, 0, 0), 2)  # Repères sur l'axe des Y
+		
+
+func get_max_point() -> Vector2:
+	if points.is_empty():
+		return Vector2.ZERO
+	var max_point = points[0]
+	for p in points:
+		if p.y < max_point.y:
+			max_point = p
+	return max_point
+
+func get_min_point() -> Vector2:
+	if points.is_empty():
+		return Vector2.ZERO
+	var min_point = points[0]
+	for p in points:
+		if p.y > min_point.y:
+			min_point = p
+	return min_point
