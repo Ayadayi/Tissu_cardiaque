@@ -19,8 +19,8 @@ func _ready():
 	points.append(Vector2(150, height / 2 - 50)) 
 	points.append(Vector2(250, height / 2 + 50)) 
 	points.append(Vector2(350, height / 2)) 
-
-
+	
+	
 func _draw():
 	# Dessiner les axes X et Y
 	draw_line(Vector2(50, 0), Vector2(50, height), Color(0, 0, 0), 2)  # L'axe Y
