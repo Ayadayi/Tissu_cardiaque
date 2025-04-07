@@ -24,11 +24,12 @@ var points : Array = [
 ]
 
 func _ready():
+	var amplitude = get_amplitude()
+	print("Amplitude de contraction : ", amplitude)
+	
 	var contraction_time = get_contraction_time()
 	print("Temps de contraction : ", contraction_time, " ms")
 
-	var amplitude = get_amplitude()
-	print("Amplitude de contraction : ", amplitude)
 
 
 func _draw():
