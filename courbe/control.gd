@@ -27,6 +27,10 @@ func _ready():
 	var contraction_time = get_contraction_time()
 	print("Temps de contraction : ", contraction_time, " ms")
 
+	var amplitude = get_amplitude()
+	print("Amplitude de contraction : ", amplitude)
+
+
 func _draw():
 	draw_line(Vector2(50, 0), Vector2(50, height), Color.BLACK, 2)  # Axe Y
 	draw_line(Vector2(0, height), Vector2(width, height), Color.BLACK, 2)  # Axe X
@@ -39,16 +43,8 @@ func _draw():
 
 	draw_circle(get_max_point(), POINT_SIZE + 2, Color(0, 1, 0))
 	draw_circle(get_min_point(), POINT_SIZE + 2, Color(1, 0, 0))
-	
-# affichage de l’amplitude
-	var base_y = height
-	var max_point =  get_max_point()
-	var base_point = Vector2(max_point.x, base_y)
 
-	var amplitude = base_y - max_point.y
-	print("Amplitude de contraction : ",amplitude)
-
-#le point le plus haut 
+#la point le plus haut
 func get_max_point() -> Vector2:
 	var max_point = points[0]
 	for p in points:
@@ -63,8 +59,14 @@ func get_min_point() -> Vector2:
 		if p.y > min_point.y:
 			min_point = p
 	return min_point
-	
-#affichage du temps de contraction 
+
+#affichage de l'amplitude 
+func get_amplitude() -> float:
+	var base_y = height
+	var max_y = get_max_point().y
+	return base_y - max_y
+
+#affichage du temps de contraction = dès que y commence à descendre
 func get_contraction_time() -> float:
 	if points.size() < 2:
 		return 0
@@ -73,8 +75,8 @@ func get_contraction_time() -> float:
 	var max_point := get_max_point()
 
 	for i in range(1, points.size()):
-		if points[i].y < points[i - 1].y and start_time == -1:
-			start_time = points[i].x
+		if points[i].y < points[i - 1].y:
+			start_time = points[i - 1].x  # Prendre le x du dernier point plat (fin de la latence)
 			break
 
 	if start_time == -1:
