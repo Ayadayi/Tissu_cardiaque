@@ -32,9 +32,11 @@ func _ready():
 	
 	var decontraction_time = get_decontraction_time()
 	print("Temps de décontraction : ", decontraction_time, " ms")
+	
+	var vitesse_contraction = get_contraction_speed_percent(10, 90)
+	print("Vitesse de contraction (10%-90%) : ", vitesse_contraction)
 
-
-
+	
 
 func _draw():
 	draw_line(Vector2(50, 0), Vector2(50, height), Color.BLACK, 2)  # Axe Y
@@ -98,3 +100,47 @@ func get_decontraction_time() -> float:
 	var end_time: float = points[points.size() - 1].x
 
 	return end_time - max_point.x
+	
+	
+	
+#vitesse de contraction #
+func get_contraction_speed_percent(x_percent: float, y_percent: float) -> float:
+	if points.size() < 2:
+		return 0
+
+	var y_rest = points[0].y              # niveau de repos
+	var y_peak = get_max_point().y        # sommet (force max)
+	var amplitude = y_rest - y_peak
+
+	var y1 = y_rest - (x_percent / 100.0) * amplitude
+	var y2 = y_rest - (y_percent / 100.0) * amplitude
+
+	var max_point = get_max_point()
+
+	var closest_point1: Vector2 = Vector2.ZERO
+	var closest_point2: Vector2 = Vector2.ZERO
+	var min_diff1 := INF
+	var min_diff2 := INF
+
+	for p in points:
+		if p.x > max_point.x:
+			continue  # on reste dans la montée
+
+		var diff1 = abs(p.y - y1)
+		if diff1 < min_diff1:
+			min_diff1 = diff1
+			closest_point1 = p
+
+		var diff2 = abs(p.y - y2)
+		if diff2 < min_diff2:
+			min_diff2 = diff2
+			closest_point2 = p
+
+	# Calcul de la vitesse
+	var delta_force = closest_point2.y - closest_point1.y
+	var delta_time = closest_point2.x - closest_point1.x
+
+	if delta_time == 0:
+		return 0
+
+	return abs(delta_force / delta_time)
