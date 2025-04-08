@@ -29,6 +29,10 @@ func _ready():
 	
 	var contraction_time = get_contraction_time()
 	print("Temps de contraction : ", contraction_time, " ms")
+	
+	var decontraction_time = get_decontraction_time()
+	print("Temps de décontraction : ", decontraction_time, " ms")
+
 
 
 
@@ -82,5 +86,15 @@ func get_contraction_time() -> float:
 
 	if start_time == -1:
 		return 0
-
 	return max_point.x - start_time
+	
+	
+#affichage de la duree de decontraction
+func get_decontraction_time() -> float:
+	if points.size() < 2:
+		return 0
+
+	var max_point := get_max_point()
+	var end_time: float = points[points.size() - 1].x
+
+	return end_time - max_point.x
