@@ -5,25 +5,37 @@ const POINT_SIZE := 3
 var width := 600
 var height := 400
 
-var points : Array = [
-	Vector2(50, 400),   # latence
-	Vector2(80, 400),   # latence
-	Vector2(110, 360),  # début contraction
-	Vector2(130, 300),
-	Vector2(150, 220),
-	Vector2(170, 160),  # sommet
-	Vector2(190, 180),
-	Vector2(210, 210),
-	Vector2(230, 250),
-	Vector2(250, 290),
-	Vector2(270, 330),
-	Vector2(290, 360),
-	Vector2(310, 380),
-	Vector2(330, 390),
-	Vector2(350, 400)
-]
+var points : Array = []
 
 func _ready():
+	# Courbe de points : latence -> contraction -> relaxation
+	points = [
+		Vector2(50, height),      # Latence (repos)
+		Vector2(60, height),
+		Vector2(70, height),
+		Vector2(80, height),
+		Vector2(90, height),
+		Vector2(100, height - 20),  # Début contraction
+		Vector2(110, height - 40),
+		Vector2(120, height - 65),
+		Vector2(130, height - 85),  # Pic de contraction
+		Vector2(140, height - 100),
+		Vector2(150, height - 95),
+		Vector2(160, height - 85),
+		Vector2(170, height - 70),
+		Vector2(180, height - 55),
+		Vector2(190, height - 40),
+		Vector2(200, height - 30),
+		Vector2(210, height - 22),
+		Vector2(220, height - 15),
+		Vector2(230, height - 10),
+		Vector2(240, height - 5),
+		Vector2(250, height - 2),
+		Vector2(260, height),      # Retour au repos
+	]
+
+	queue_redraw()
+	
 	var amplitude = get_amplitude()
 	print("Amplitude de contraction : ", amplitude)
 	
@@ -33,14 +45,13 @@ func _ready():
 	var decontraction_time = get_decontraction_time()
 	print("Temps de décontraction : ", decontraction_time, " ms")
 	
-	var vitesse_contraction = get_contraction_speed_percent(10, 90)
-	print("Vitesse de contraction (10%-90%) : ", vitesse_contraction)
-	
-	var vitesse_decontraction = get_decontraction_speed_percent(90, 10)
-	print("Vitesse de décontraction (90%-10%) : ", vitesse_decontraction)
+	var vitesse_contraction = get_contraction_speed_percent(20, 80)
+	print("Vitesse de contraction (20%-80%) : ", vitesse_contraction)
+
+	var vitesse_decontraction = get_decontraction_speed_percent(80, 20)
+	print("Vitesse de décontraction (80%-20%) : ", vitesse_decontraction)
 
 
-	
 
 func _draw():
 	draw_line(Vector2(50, 0), Vector2(50, height), Color.BLACK, 2)  # Axe Y
@@ -54,7 +65,9 @@ func _draw():
 
 	draw_circle(get_max_point(), POINT_SIZE + 2, Color(0, 1, 0))
 	draw_circle(get_min_point(), POINT_SIZE + 2, Color(1, 0, 0))
+	
 
+########################################  Min et Max  ##########################################################
 #la point le plus haut
 func get_max_point() -> Vector2:
 	var max_point = points[0]
@@ -71,17 +84,20 @@ func get_min_point() -> Vector2:
 			min_point = p
 	return min_point
 
-#affichage de l'amplitude 
+
+#######################################  L'amplitude Max  #########################################################
+
 func get_amplitude() -> float:
 	var base_y = height
 	var max_y = get_max_point().y
 	return base_y - max_y
 
-#affichage du temps de contraction = dès que y commence à descendre
+
+
+########################################  Duree de Contraction ##################################################
 func get_contraction_time() -> float:
 	if points.size() < 2:
 		return 0
-
 	var start_time := -1.0
 	var max_point := get_max_point()
 
@@ -95,7 +111,7 @@ func get_contraction_time() -> float:
 	return max_point.x - start_time
 	
 	
-#affichage de la duree de decontraction
+######################################  Duree de Decontraction ##################################################
 func get_decontraction_time() -> float:
 	if points.size() < 2:
 		return 0
@@ -104,10 +120,10 @@ func get_decontraction_time() -> float:
 	var end_time: float = points[points.size() - 1].x
 
 	return end_time - max_point.x
-	
-	
-	
-#vitesse de contraction 
+
+
+######################################  Vitesse de Contraction ##################################################
+
 func get_contraction_speed_percent(x_percent: float, y_percent: float) -> float:
 	if points.size() < 2:
 		return 0
@@ -150,14 +166,15 @@ func get_contraction_speed_percent(x_percent: float, y_percent: float) -> float:
 	return abs(delta_force / delta_time)
 	
 	
-#vitesse de decontraction 
+######################################  Vitesse de Déontraction ##################################################
+
 func get_decontraction_speed_percent(x_percent: float, y_percent: float) -> float:
 	if points.size() < 2:
-		return 0
+		return 0.0
 
-	var y_rest = points[points.size() - 1].y       # retour au repos
-	var y_peak = get_max_point().y                 # sommet (force max)
-	var amplitude = y_rest - y_peak                # amplitude de la descente
+	var y_rest = points[0].y               # niveau de repos
+	var y_peak = get_max_point().y         # sommet (force max)
+	var amplitude = y_rest - y_peak        # amplitude toujours positive
 
 	var y1 = y_peak + (x_percent / 100.0) * amplitude
 	var y2 = y_peak + (y_percent / 100.0) * amplitude
@@ -170,8 +187,8 @@ func get_decontraction_speed_percent(x_percent: float, y_percent: float) -> floa
 	var min_diff2 := INF
 
 	for p in points:
-		if p.x < max_point.x:
-			continue  # on reste dans la phase de descente uniquement
+		if p.x <= max_point.x:
+			continue  # on ignore la phase de contraction (avant ou au pic)
 
 		var diff1 = abs(p.y - y1)
 		if diff1 < min_diff1:
@@ -183,11 +200,11 @@ func get_decontraction_speed_percent(x_percent: float, y_percent: float) -> floa
 			min_diff2 = diff2
 			closest_point2 = p
 
-	# Calcul de la vitesse
+	# Calcul de la vitesse (pente)
 	var delta_force = closest_point2.y - closest_point1.y
 	var delta_time = closest_point2.x - closest_point1.x
 
 	if delta_time == 0:
-		return 0
+		return 0.0
 
 	return abs(delta_force / delta_time)
