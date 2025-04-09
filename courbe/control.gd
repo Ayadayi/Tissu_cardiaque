@@ -48,6 +48,8 @@ func _ready():
 	var vitesse_contraction = get_contraction_speed_percent(20, 80)
 	print("Vitesse de contraction (20%-80%) : ", vitesse_contraction)
 
+	var vitesse_decontraction = get_decontraction_speed_percent(80, 20)
+	print("Vitesse de décontraction (80%-20%) : ", vitesse_decontraction)
 
 
 
@@ -96,7 +98,6 @@ func get_amplitude() -> float:
 func get_contraction_time() -> float:
 	if points.size() < 2:
 		return 0
-
 	var start_time := -1.0
 	var max_point := get_max_point()
 
@@ -161,5 +162,49 @@ func get_contraction_speed_percent(x_percent: float, y_percent: float) -> float:
 
 	if delta_time == 0:
 		return 0
+
+	return abs(delta_force / delta_time)
+	
+	
+######################################  Vitesse de Déontraction ##################################################
+
+func get_decontraction_speed_percent(x_percent: float, y_percent: float) -> float:
+	if points.size() < 2:
+		return 0.0
+
+	var y_rest = points[0].y               # niveau de repos
+	var y_peak = get_max_point().y         # sommet (force max)
+	var amplitude = y_rest - y_peak        # amplitude toujours positive
+
+	var y1 = y_peak + (x_percent / 100.0) * amplitude
+	var y2 = y_peak + (y_percent / 100.0) * amplitude
+
+	var max_point = get_max_point()
+
+	var closest_point1: Vector2 = Vector2.ZERO
+	var closest_point2: Vector2 = Vector2.ZERO
+	var min_diff1 := INF
+	var min_diff2 := INF
+
+	for p in points:
+		if p.x <= max_point.x:
+			continue  # on ignore la phase de contraction (avant ou au pic)
+
+		var diff1 = abs(p.y - y1)
+		if diff1 < min_diff1:
+			min_diff1 = diff1
+			closest_point1 = p
+
+		var diff2 = abs(p.y - y2)
+		if diff2 < min_diff2:
+			min_diff2 = diff2
+			closest_point2 = p
+
+	# Calcul de la vitesse (pente)
+	var delta_force = closest_point2.y - closest_point1.y
+	var delta_time = closest_point2.x - closest_point1.x
+
+	if delta_time == 0:
+		return 0.0
 
 	return abs(delta_force / delta_time)
