@@ -1,6 +1,5 @@
 extends Control
 
-const RESOLUTION := 100
 const POINT_SIZE := 3
 var width := 600
 var height := 400
