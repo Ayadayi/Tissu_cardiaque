@@ -7,7 +7,7 @@ var height := 400
 var points : Array = []
 
 func _ready():
-		# Ajouter FileDialog si pas dans l'éditeur
+	# Ajouter FileDialog si pas dans l'éditeur
 	var file_dialog := FileDialog.new()
 	file_dialog.name = "FileDialog"
 	file_dialog.access = FileDialog.ACCESS_FILESYSTEM
@@ -16,8 +16,7 @@ func _ready():
 	add_child(file_dialog)
 	file_dialog.file_selected.connect(self._on_fichier_selectionne)
 
-
-	# Courbe de points : latence -> contraction -> relaxation
+	# Courbe de points : latence -> contraction -> relaxation (démo)
 	points = [
 		Vector2(50, height),      # Latence (repos)
 		Vector2(60, height),
@@ -42,32 +41,77 @@ func _ready():
 		Vector2(250, height - 2),
 		Vector2(260, height),      # Retour au repos
 	]
+	
+	
+
+	print("points chargés :", points.size())
 
 	queue_redraw()
-	
+
 	var amplitude = get_amplitude()
 	print("Amplitude de contraction : ", amplitude)
-	
+
 	var contraction_time = get_contraction_time()
 	print("Temps de contraction : ", contraction_time, " ms")
-	
+
 	var decontraction_time = get_decontraction_time()
 	print("Temps de décontraction : ", decontraction_time, " ms")
-	
+
 	var vitesse_contraction = get_contraction_speed_percent(20, 80)
 	print("Vitesse de contraction (20%-80%) : ", vitesse_contraction)
 
 	var vitesse_decontraction = get_decontraction_speed_percent(80, 20)
 	print("Vitesse de décontraction (80%-20%) : ", vitesse_decontraction)
-	
-	# Quand on clique sur le bouton
+
+
+# Quand on clique sur le bouton
 func _on_ouvrir_fichier_pressed():
 	var file_dialog = get_node("FileDialog")
 	file_dialog.popup_centered()
 
+
 # Quand un fichier est sélectionné
 func _on_fichier_selectionne(path: String):
 	print("Fichier sélectionné : ", path)
+
+	# 1. Compter le nombre total de lignes
+	var file = FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		print("Erreur d'ouverture du fichier")
+		return
+
+	var total_lignes := 0
+	while not file.eof_reached():
+		file.get_line()
+		total_lignes += 1
+	file.close()
+
+	# 2. Calcul du step pour obtenir environ 400 points
+	var desired_points := 400
+	var step: int = max(int(total_lignes / desired_points), 1)
+
+
+	print("Nombre total de lignes : ", total_lignes)
+	print("Step calculé : ", step)
+
+	# 3. Lecture du fichier avec échantillonnage
+	points.clear()
+	file = FileAccess.open(path, FileAccess.READ)
+	var count := 0
+
+	while not file.eof_reached():
+		var line := file.get_line().strip_edges()
+		if count % step == 0 and line != "":
+			var parts := line.split("\t")
+			if parts.size() >= 4:
+				var x = float(parts[0])      # colonne 0 : temps
+				var y = float(parts[3])      # colonne 3 : réponse du muscle
+				points.append(Vector2(x, y))
+		count += 1
+
+	file.close()
+	print("Nombre de points affichés : ", points.size())
+	queue_redraw()
 
 
 func _draw():
@@ -85,16 +129,20 @@ func _draw():
 
 
 ########################################  Min et Max  ##########################################################
-#la point le plus haut
+# le point le plus haut
 func get_max_point() -> Vector2:
+	if points.is_empty():
+		return Vector2.ZERO  # si aucun point, on renvoie un point neutre
 	var max_point = points[0]
 	for p in points:
 		if p.y < max_point.y:
 			max_point = p
 	return max_point
 
-#le point le plus bas 
+# le point le plus bas 
 func get_min_point() -> Vector2:
+	if points.is_empty():
+		return Vector2.ZERO  # pareil ici
 	var min_point = points[0]
 	for p in points:
 		if p.y > min_point.y:
@@ -102,13 +150,12 @@ func get_min_point() -> Vector2:
 	return min_point
 
 
-#######################################  L'amplitude Max  #########################################################
 
+#######################################  L'amplitude Max  #########################################################
 func get_amplitude() -> float:
 	var base_y = height
 	var max_y = get_max_point().y
 	return base_y - max_y
-
 
 
 ########################################  Duree de Contraction ##################################################
@@ -126,8 +173,8 @@ func get_contraction_time() -> float:
 	if start_time == -1:
 		return 0
 	return max_point.x - start_time
-	
-	
+
+
 ######################################  Duree de Decontraction ##################################################
 func get_decontraction_time() -> float:
 	if points.size() < 2:
@@ -140,7 +187,6 @@ func get_decontraction_time() -> float:
 
 
 ######################################  Vitesse de Contraction ##################################################
-
 func get_contraction_speed_percent(x_percent: float, y_percent: float) -> float:
 	if points.size() < 2:
 		return 0
@@ -173,7 +219,6 @@ func get_contraction_speed_percent(x_percent: float, y_percent: float) -> float:
 			min_diff2 = diff2
 			closest_point2 = p
 
-	# Calcul de la vitesse
 	var delta_force = closest_point2.y - closest_point1.y
 	var delta_time = closest_point2.x - closest_point1.x
 
@@ -181,10 +226,9 @@ func get_contraction_speed_percent(x_percent: float, y_percent: float) -> float:
 		return 0
 
 	return abs(delta_force / delta_time)
-	
-	
-######################################  Vitesse de Déontraction ##################################################
 
+
+######################################  Vitesse de Décontraction ##################################################
 func get_decontraction_speed_percent(x_percent: float, y_percent: float) -> float:
 	if points.size() < 2:
 		return 0.0
@@ -217,7 +261,6 @@ func get_decontraction_speed_percent(x_percent: float, y_percent: float) -> floa
 			min_diff2 = diff2
 			closest_point2 = p
 
-	# Calcul de la vitesse (pente)
 	var delta_force = closest_point2.y - closest_point1.y
 	var delta_time = closest_point2.x - closest_point1.x
 
@@ -228,4 +271,4 @@ func get_decontraction_speed_percent(x_percent: float, y_percent: float) -> floa
 
 
 func _on_button_pressed() -> void:
-	pass # Replace with function body.
+	pass # bouton inutilisé ici pour l’instant
