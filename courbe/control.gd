@@ -42,9 +42,6 @@ func _ready():
 		Vector2(260, height),      # Retour au repos
 	]
 	
-	
-
-	print("points chargés :", points.size())
 
 	queue_redraw()
 
