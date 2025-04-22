@@ -29,3 +29,6 @@ anchors_preset = 0
 offset_right = 105.0
 offset_bottom = 40.0
 script = ExtResource("1_wtcfe")
+
+[connection signal="pressed" from="TextureRect/Button" to="Control" method="_on_ouvrir_fichier_pressed"]
+[connection signal="pressed" from="TextureRect/Button" to="Control" method="_on_button_pressed"]

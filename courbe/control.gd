@@ -7,6 +7,16 @@ var height := 400
 var points : Array = []
 
 func _ready():
+		# Ajouter FileDialog si pas dans l'éditeur
+	var file_dialog := FileDialog.new()
+	file_dialog.name = "FileDialog"
+	file_dialog.access = FileDialog.ACCESS_FILESYSTEM
+	file_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	file_dialog.filters = ["*.txt", "*.csv", "*.*"]
+	add_child(file_dialog)
+	file_dialog.file_selected.connect(self._on_fichier_selectionne)
+
+
 	# Courbe de points : latence -> contraction -> relaxation
 	points = [
 		Vector2(50, height),      # Latence (repos)
@@ -49,6 +59,16 @@ func _ready():
 
 	var vitesse_decontraction = get_decontraction_speed_percent(80, 20)
 	print("Vitesse de décontraction (80%-20%) : ", vitesse_decontraction)
+	
+	# Quand on clique sur le bouton
+func _on_ouvrir_fichier_pressed():
+	var file_dialog = get_node("FileDialog")
+	file_dialog.popup_centered()
+
+# Quand un fichier est sélectionné
+func _on_fichier_selectionne(path: String):
+	print("Fichier sélectionné : ", path)
+
 
 func _draw():
 	draw_line(Vector2(50, 0), Vector2(50, height), Color.BLACK, 2)  # Axe Y
@@ -205,3 +225,7 @@ func get_decontraction_speed_percent(x_percent: float, y_percent: float) -> floa
 		return 0.0
 
 	return abs(delta_force / delta_time)
+
+
+func _on_button_pressed() -> void:
+	pass # Replace with function body.
