@@ -50,8 +50,6 @@ func _ready():
 	var vitesse_decontraction = get_decontraction_speed_percent(80, 20)
 	print("Vitesse de décontraction (80%-20%) : ", vitesse_decontraction)
 
-
-
 func _draw():
 	draw_line(Vector2(50, 0), Vector2(50, height), Color.BLACK, 2)  # Axe Y
 	draw_line(Vector2(0, height), Vector2(width, height), Color.BLACK, 2)  # Axe X
@@ -64,7 +62,7 @@ func _draw():
 
 	draw_circle(get_max_point(), POINT_SIZE + 2, Color(0, 1, 0))
 	draw_circle(get_min_point(), POINT_SIZE + 2, Color(1, 0, 0))
-	
+
 
 ########################################  Min et Max  ##########################################################
 #la point le plus haut
