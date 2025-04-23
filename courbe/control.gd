@@ -61,17 +61,17 @@ func _ready():
 	print("Vitesse de décontraction (80%-20%) : ", vitesse_decontraction)
 
 
-# Quand on clique sur le bouton
+####################### Quand on clique sur le bouton #######################
 func _on_ouvrir_fichier_pressed():
 	var file_dialog = get_node("FileDialog")
 	file_dialog.popup_centered()
 
 
-# Quand un fichier est sélectionné
+######################## Quand un fichier est sélectionné #######################
 func _on_fichier_selectionne(path: String):
 	print("Fichier sélectionné : ", path)
 
-	# 1. Compter le nombre total de lignes
+	####################### 1 Compter le nombre total de lignes #######################
 	var file = FileAccess.open(path, FileAccess.READ)
 	if file == null:
 		print("Erreur d'ouverture du fichier")
@@ -83,7 +83,7 @@ func _on_fichier_selectionne(path: String):
 		total_lignes += 1
 	file.close()
 
-	# 2. Calcul du step pour obtenir environ 400 points
+	####################### 2 Calcul du step pour obtenir environ 400 points #######################
 	var desired_points := 400
 	var step: int = max(int(total_lignes / desired_points), 1)
 
@@ -91,7 +91,7 @@ func _on_fichier_selectionne(path: String):
 	print("Nombre total de lignes : ", total_lignes)
 	print("Step calculé : ", step)
 
-	# 3. Lecture du fichier avec échantillonnage
+	####################### 3 Lecture du fichier avec échantillonnage #######################
 	points.clear()
 	file = FileAccess.open(path, FileAccess.READ)
 	var count := 0
@@ -126,26 +126,21 @@ func _draw():
 
 
 ########################################  Min et Max  ##########################################################
-# le point le plus haut
+#la point le plus haut
 func get_max_point() -> Vector2:
-	if points.is_empty():
-		return Vector2.ZERO  # si aucun point, on renvoie un point neutre
 	var max_point = points[0]
 	for p in points:
 		if p.y < max_point.y:
 			max_point = p
 	return max_point
 
-# le point le plus bas 
+#le point le plus bas 
 func get_min_point() -> Vector2:
-	if points.is_empty():
-		return Vector2.ZERO  # pareil ici
 	var min_point = points[0]
 	for p in points:
 		if p.y > min_point.y:
 			min_point = p
 	return min_point
-
 
 
 #######################################  L'amplitude Max  #########################################################
