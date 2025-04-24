@@ -106,7 +106,7 @@ func _on_fichier_selectionne(path: String):
 			if parts.size() >= 4:
 				var x = float(parts[0])
 				var y = float(parts[3])
-				print("Y brut :", y)
+				#print("Y brut :", y)
 
 				# Mettre à jour les min/max pour x et y
 				min_x = min(min_x, x)
@@ -118,8 +118,8 @@ func _on_fichier_selectionne(path: String):
 	file.close()
 
 	# Normalisation de X (étaler les points sur toute la largeur)
-	print("min_x = ", min_x, " max_x = ", max_x)
-	print("min_y = ", min_y, " max_y = ", max_y)
+	#print("min_x = ", min_x, " max_x = ", max_x)
+	#print("min_y = ", min_y, " max_y = ", max_y)
 
 	# Relire encore une fois avec les points
 	file = FileAccess.open(path, FileAccess.READ)
@@ -301,3 +301,6 @@ func get_decontraction_speed_percent(x_percent: float, y_percent: float) -> floa
 
 #func _on_button_pressed() -> void:
 	#pass # bouton inutilisé ici pour l’instant
+	
+	
+	##### comm ####
