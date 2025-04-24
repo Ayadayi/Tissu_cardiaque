@@ -71,44 +71,81 @@ func _on_ouvrir_fichier_pressed():
 func _on_fichier_selectionne(path: String):
 	print("Fichier sélectionné : ", path)
 
-	####################### 1 Compter le nombre total de lignes #######################
 	var file = FileAccess.open(path, FileAccess.READ)
 	if file == null:
 		print("Erreur d'ouverture du fichier")
 		return
 
 	var total_lignes := 0
+	var step := 1
+	points.clear()
+
+	# Lire une fois pour compter les lignes
 	while not file.eof_reached():
 		file.get_line()
 		total_lignes += 1
 	file.close()
 
-	####################### 2 Calcul du step pour obtenir environ 400 points #######################
-	var desired_points := 400
-	var step: int = max(int(total_lignes / desired_points), 1)
-
-
+	step = max(total_lignes / 400, 1)
 	print("Nombre total de lignes : ", total_lignes)
 	print("Step calculé : ", step)
 
-	####################### 3 Lecture du fichier avec échantillonnage #######################
-	points.clear()
+	# Relire pour collecter les points
 	file = FileAccess.open(path, FileAccess.READ)
 	var count := 0
+
+	var min_x = INF
+	var max_x = -INF
+	var min_y = INF
+	var max_y = -INF
 
 	while not file.eof_reached():
 		var line := file.get_line().strip_edges()
 		if count % step == 0 and line != "":
 			var parts := line.split("\t")
 			if parts.size() >= 4:
-				var x = float(parts[0])      # colonne 0 : temps
-				var y = float(parts[3])      # colonne 3 : réponse du muscle
-				points.append(Vector2(x, y))
-		count += 1
+				var x = float(parts[0])
+				var y = float(parts[3])
+				print("Y brut :", y)
 
+				# Mettre à jour les min/max pour x et y
+				min_x = min(min_x, x)
+				max_x = max(max_x, x)
+				min_y = min(min_y, y)
+				max_y = max(max_y, y)
+
+		count += 1
 	file.close()
+
+	# Normalisation de X (étaler les points sur toute la largeur)
+	print("min_x = ", min_x, " max_x = ", max_x)
+	print("min_y = ", min_y, " max_y = ", max_y)
+
+	# Relire encore une fois avec les points
+	file = FileAccess.open(path, FileAccess.READ)
+	count = 0
+
+	while not file.eof_reached():
+		var line := file.get_line().strip_edges()
+		if count % step == 0 and line != "":
+			var parts := line.split("\t")
+			if parts.size() >= 4:
+				var x_raw = float(parts[0])
+				var y_raw = float(parts[3])
+
+				# Mettre à l’échelle X et Y
+				var x_scaled = (x_raw - min_x) / (max_x - min_x) * width  # Adapter X à la largeur
+				var y_scaled = height - ((y_raw - min_y) / (max_y - min_y) * height)  # Adapter Y à la hauteur
+
+				points.append(Vector2(x_scaled, y_scaled))
+		count += 1
+	file.close()
+
 	print("Nombre de points affichés : ", points.size())
 	queue_redraw()
+
+
+
 
 
 func _draw():
@@ -262,5 +299,5 @@ func get_decontraction_speed_percent(x_percent: float, y_percent: float) -> floa
 	return abs(delta_force / delta_time)
 
 
-func _on_button_pressed() -> void:
-	pass # bouton inutilisé ici pour l’instant
+#func _on_button_pressed() -> void:
+	#pass # bouton inutilisé ici pour l’instant
