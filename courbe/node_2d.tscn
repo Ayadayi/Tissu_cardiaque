@@ -1,5 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://btsmp3sf0cnvk"]
+[gd_scene load_steps=3 format=3 uid="uid://btsmp3sf0cnvk"]
 
+[ext_resource type="Script" uid="uid://bctfndt65wvmk" path="res://button.gd" id="1_0e48y"]
 [ext_resource type="Script" uid="uid://dtuua2rm1uh3a" path="res://control.gd" id="1_wtcfe"]
 
 [node name="Node2D" type="Node2D"]
@@ -8,7 +9,7 @@
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Button" type="Button" parent="TextureRect"]
+[node name="ImportButton" type="Button" parent="TextureRect"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -22,6 +23,13 @@ offset_bottom = 33.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Importer un fichier"
+script = ExtResource("1_0e48y")
+
+[node name="FileImporter" type="FileDialog" parent="TextureRect"]
+title = "Open File(s)"
+ok_button_text = "Open"
+file_mode = 1
+filters = PackedStringArray("\"*.png, *.jpg, *.wav, *.txt ; Fichiers supportés\"")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -29,3 +37,5 @@ anchors_preset = 0
 offset_right = 105.0
 offset_bottom = 40.0
 script = ExtResource("1_wtcfe")
+
+[connection signal="pressed" from="TextureRect/ImportButton" to="TextureRect/ImportButton" method="_pressed"]
