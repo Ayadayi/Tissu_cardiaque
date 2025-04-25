@@ -107,6 +107,8 @@ func _on_fichier_selectionne(path: String):
 				var x = float(parts[0])
 				var y = float(parts[3])
 				#print("Y brut :", y)
+				#print("X brut :", x)     # Ajoute cette ligne
+
 
 				# Mettre à jour les min/max pour x et y
 				min_x = min(min_x, x)
@@ -130,11 +132,12 @@ func _on_fichier_selectionne(path: String):
 		if count % step == 0 and line != "":
 			var parts := line.split("\t")
 			if parts.size() >= 4:
-				var x_raw = float(parts[0])
-				var y_raw = float(parts[3])
+				var x_raw = float(parts[0]) # temps en ms
+				var y_raw = float(parts[3]) # reponse du muscle
 
 				# Mettre à l’échelle X et Y
-				var x_scaled = (x_raw - min_x) / (max_x - min_x) * width  # Adapter X à la largeur
+				var x_scaled = 50 + ((x_raw - min_x) / (max_x - min_x) * (width - 50))
+  # Adapter X à la largeur
 				var y_scaled = height - ((y_raw - min_y) / (max_y - min_y) * height)  # Adapter Y à la hauteur
 
 				points.append(Vector2(x_scaled, y_scaled))
@@ -149,8 +152,8 @@ func _on_fichier_selectionne(path: String):
 
 
 func _draw():
-	draw_line(Vector2(50, 0), Vector2(50, height), Color.BLACK, 2)  # Axe Y
-	draw_line(Vector2(0, height), Vector2(width, height), Color.BLACK, 2)  # Axe X
+	draw_line(Vector2(50, 0), Vector2(50, height), Color.NAVY_BLUE, 2)  # Axe Y
+	draw_line(Vector2(0, height), Vector2(width, height), Color.NAVY_BLUE, 2)  # Axe X
 
 	for point in points:
 		draw_circle(point, POINT_SIZE, Color.BLACK)
@@ -301,6 +304,3 @@ func get_decontraction_speed_percent(x_percent: float, y_percent: float) -> floa
 
 #func _on_button_pressed() -> void:
 	#pass # bouton inutilisé ici pour l’instant
-	
-	
-	##### comm ####
