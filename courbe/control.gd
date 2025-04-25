@@ -304,3 +304,7 @@ func get_decontraction_speed_percent(x_percent: float, y_percent: float) -> floa
 
 #func _on_button_pressed() -> void:
 	#pass # bouton inutilisé ici pour l’instant
+
+
+func _on_button_pressed() -> void:
+	pass # Replace with function body.
