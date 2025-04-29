@@ -6,6 +6,12 @@ var height := 400
 
 var points : Array = []
 
+var start_time := 2000.0     
+var end_time := 8000.0
+var sampling_density := 0.1 #10% des points
+
+
+
 func _ready():
 	var file_dialog := FileDialog.new()
 	file_dialog.name = "FileDialog"
@@ -46,71 +52,58 @@ func _on_ouvrir_fichier_pressed():
 func _on_fichier_selectionne(path: String):
 	print("Fichier sélectionné : ", path)
 
-	var file = FileAccess.open(path, FileAccess.READ)
+	points.clear()
+	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
 		print("Erreur d'ouverture du fichier")
 		return
 
-	var total_lignes := 0
-	var step := 1
-	points.clear()
+	var min_x := INF
+	var max_x := -INF
+	var min_y := INF
+	var max_y := -INF
 
-	while not file.eof_reached():
-		file.get_line()
-		total_lignes += 1
-	file.close()
-
-	step = max(total_lignes / 50, 1)
-	print("Nombre total de lignes : ", total_lignes)
-	print("Step calculé : ", step)
-
-	file = FileAccess.open(path, FileAccess.READ)
-	var count := 0
-
-	var min_x = INF
-	var max_x = -INF
-	var min_y = INF
-	var max_y = -INF
-
+	# Étape 1 : Première passe pour calculer min/max DANS la plage de temps choisie
 	while not file.eof_reached():
 		var line := file.get_line().strip_edges()
-		if count % step == 0 and line != "":
-			var parts := line.split("\t")
-			if parts.size() >= 4:
-				var x = float(parts[0])
-				var y = float(parts[3])
-
+		if line == "":
+			continue
+		var parts := line.split("\t")
+		if parts.size() >= 4:
+			var x = float(parts[0])
+			var y = float(parts[3])
+			if x >= start_time and x <= end_time:
 				min_x = min(min_x, x)
 				max_x = max(max_x, x)
 				min_y = min(min_y, y)
 				max_y = max(max_y, y)
-		count += 1
 	file.close()
 
+	# Étape 2 : Deuxième passe pour filtrer + échantillonner + normaliser
 	file = FileAccess.open(path, FileAccess.READ)
-	count = 0
-
 	while not file.eof_reached():
 		var line := file.get_line().strip_edges()
-		if count % step == 0 and line != "":
-			var parts := line.split("\t")
-			if parts.size() >= 4:
-				var x_raw = float(parts[0])
-				var y_raw = float(parts[3])
+		if line == "":
+			continue
+		var parts := line.split("\t")
+		if parts.size() >= 4:
+			var x_raw = float(parts[0])
+			var y_raw = float(parts[3])
 
-				var x_scaled = 50 + ((x_raw - min_x) / (max_x - min_x) * (width - 50))
-				var y_scaled = height - ((y_raw - min_y) / (max_y - min_y) * height)
-
-				points.append(Vector2(x_scaled, y_scaled))
-		count += 1
+			if x_raw >= start_time and x_raw <= end_time:
+				if randf() <= sampling_density:
+					var x_scaled = 50 + ((x_raw - min_x) / (max_x - min_x) * (width - 50))
+					var y_scaled = height - ((y_raw - min_y) / (max_y - min_y) * height)
+					points.append(Vector2(x_scaled, y_scaled))
 	file.close()
 
 	print("Nombre de points affichés : ", points.size())
-	
+
 	if points.size() > 0:
 		afficher_mesures()
 
 	queue_redraw()
+
 
 ########################################  draw  ##########################################################
 func _draw():
