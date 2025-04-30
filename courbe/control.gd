@@ -39,8 +39,13 @@ func afficher_mesures():
 	var vitesse_contraction = get_contraction_speed_percent(20, 80)
 	print("Vitesse de contraction (20%-80%) : ", vitesse_contraction)
 
-	var vitesse_decontraction = get_decontraction_speed_percent(50, 10)
-	print("Vitesse de décontraction (50%-10%) : ", vitesse_decontraction)
+	var vitesse_decontraction = get_decontraction_speed_percent(80, 20)
+	print("Vitesse de décontraction (80%-20%) : ", vitesse_decontraction)
+	
+	var max_point = get_max_point()
+	var min_point = get_min_point()
+	print("Coordonnées du pic de contraction (max) : ", max_point)
+	print("Coordonnées du point de repos (min) : ", min_point)
 	
 
 ####################### Quand on clique sur le bouton #######################
@@ -87,8 +92,8 @@ func _on_fichier_selectionne(path: String):
 			continue
 		var parts := line.split("\t")
 		if parts.size() >= 4:
-			var x_raw = float(parts[0])
-			var y_raw = float(parts[3])
+			var x_raw = float(parts[0]) # colonne 0
+			var y_raw = float(parts[3]) # colonne 3
 
 			if x_raw >= start_time and x_raw <= end_time:
 				if randf() <= sampling_density:
