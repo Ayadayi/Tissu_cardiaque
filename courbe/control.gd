@@ -6,9 +6,11 @@ var height := 400
 
 var points : Array = []
 
-var start_time := 2000.0     
+var start_time := 0000.0     
 var end_time := 8000.0
-var sampling_density := 0.1 #10% des points
+var density := 0.1 #10% des points
+
+
 
 
 
@@ -20,6 +22,9 @@ func _ready():
 	file_dialog.filters = ["*.txt", "*.csv", "*.*"]
 	add_child(file_dialog)
 	file_dialog.file_selected.connect(self._on_fichier_selectionne)
+	
+	
+	
 
 
 	queue_redraw()
@@ -48,7 +53,7 @@ func afficher_mesures():
 	print("Coordonnées du point de repos (min) : ", min_point)
 	
 
-####################### Quand on clique sur le bouton #######################
+####################### Quand on clique sur le bouton ####################### permet de choisir un fichier
 func _on_ouvrir_fichier_pressed():
 	var file_dialog = get_node("FileDialog")
 	file_dialog.popup_centered()
@@ -96,7 +101,7 @@ func _on_fichier_selectionne(path: String):
 			var y_raw = float(parts[3]) # colonne 3
 
 			if x_raw >= start_time and x_raw <= end_time:
-				if randf() <= sampling_density:
+				if randf() <= density:
 					var x_scaled = 50 + ((x_raw - min_x) / (max_x - min_x) * (width - 50))
 					var y_scaled = height - ((y_raw - min_y) / (max_y - min_y) * height)
 					points.append(Vector2(x_scaled, y_scaled))
@@ -112,15 +117,21 @@ func _on_fichier_selectionne(path: String):
 
 ########################################  draw  ##########################################################
 func _draw():
+	#fond blanc
+	draw_rect(Rect2(Vector2(0, 0), Vector2(1080, 550)), Color.WHITE)
+	
+	#axe
 	draw_line(Vector2(50, 0), Vector2(50, height), Color.NAVY_BLUE, 2)
 	draw_line(Vector2(0, height), Vector2(width, height), Color.NAVY_BLUE, 2)
 
+	#points
 	for point in points:
 		draw_circle(point, POINT_SIZE, Color.BLACK)
 
 	for i in range(points.size() - 1):
 		draw_line(points[i], points[i + 1], Color.BLACK, 2)
 
+	#min et max
 	draw_circle(get_max_point(), POINT_SIZE + 2, Color(0, 1, 0)) # Pic contraction
 	draw_circle(get_min_point(), POINT_SIZE + 2, Color(1, 0, 0)) # Repos
 
