@@ -6,11 +6,9 @@ var height := 400
 
 var points : Array = []
 
-var start_time := 0000.0     
+var start_time := 000.0     
 var end_time := 8000.0
 var density := 0.1 #10% des points
-
-
 
 
 
@@ -274,3 +272,21 @@ func get_decontraction_speed_percent(x_percent: float, y_percent: float) -> floa
 
 func _on_button_pressed() -> void:
 	pass
+
+
+func _on_calculate_button_pressed() -> void:
+	var start_input = $UI/UIVBox/StartTimeInput.text
+	var end_input = $UI/UIVBox/EndTimeInput.text
+	var density_input = $UI/UIVBox/DensityInput.text
+
+	if start_input.is_valid_float():
+		start_time = float(start_input)
+	if end_input.is_valid_float():
+		end_time = float(end_input)
+	if density_input.is_valid_float():
+		density = clamp(float(density_input), 0.0, 1.0) # limite entre 0 et 1
+
+	# Recharge les données si un fichier a déjà été sélectionné
+	var file_dialog = $FileDialog
+	if file_dialog.current_path != "":
+		_on_fichier_selectionne(file_dialog.current_path)
