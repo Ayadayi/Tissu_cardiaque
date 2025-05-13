@@ -33,24 +33,25 @@ func _ready():
 
 func afficher_mesures():
 	var amplitude = get_amplitude()
-	print("Amplitude de contraction : ", amplitude)
+	$UI/ResultVBox/AmplitudeLabel.text = "Amplitude de contraction : " + str(amplitude)
 
 	var contraction_time = get_contraction_time()
-	print("Temps de contraction : ", contraction_time, " ms")
+	$UI/ResultVBox/ContractionTimeLabel.text = "Temps de contraction : " + str(contraction_time) + " ms"
 
 	var decontraction_time = get_decontraction_time()
-	print("Temps de décontraction : ", decontraction_time, " ms")
+	$UI/ResultVBox/DecontractionTimeLabel.text = "Temps de décontraction : " + str(decontraction_time) + " ms"
 
 	var vitesse_contraction = get_contraction_speed_percent(20, 80)
-	print("Vitesse de contraction (20%-80%) : ", vitesse_contraction)
+	$UI/ResultVBox/ContractionSpeedLabel.text = "Vitesse de contraction (20%-80%) : " + str(vitesse_contraction)
 
 	var vitesse_decontraction = get_decontraction_speed_percent(80, 20)
-	print("Vitesse de décontraction (80%-20%) : ", vitesse_decontraction)
-	
+	$UI/ResultVBox/DecontractionSpeedLabel.text = "Vitesse de décontraction (80%-20%) : " + str(vitesse_decontraction)
+
 	var max_point = get_max_point()
 	var min_point = get_min_point()
-	print("Coordonnées du pic de contraction (max) : ", max_point)
-	print("Coordonnées du point de repos (min) : ", min_point)
+	$UI/ResultVBox/MaxPointLabel.text = "Coordonnées du pic de contraction (max) : " + str(max_point)
+	$UI/ResultVBox/MinPointLabel.text = "Coordonnées du point de repos (min) : " + str(min_point)
+
 	
 
 ####################### Quand on clique sur le bouton ####################### permet de choisir un fichier
@@ -136,7 +137,7 @@ func _on_fichier_selectionne(path: String):
 ########################################  draw  ##########################################################
 func _draw():
 	#fond blanc
-	draw_rect(Rect2(Vector2(0, 0), Vector2(1080, 550)), Color.WHITE)
+	#draw_rect(Rect2(Vector2(0, 0), Vector2(1080, 550)), Color.WHITE)
 	
 	#axe
 	draw_line(Vector2(50, 0), Vector2(50, height), Color.NAVY_BLUE, 2)
