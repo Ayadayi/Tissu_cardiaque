@@ -319,4 +319,4 @@ func _on_calculate_button_pressed() -> void:
 	# Recharge les données si un fichier a déjà été sélectionné
 	var file_dialog = $FileDialog
 	if file_dialog.current_path != "":
-		_on_fichier_selectionne(file_dialog.current_path)
+		_on_fichier_selectionne(file_dialog.current_path) 
