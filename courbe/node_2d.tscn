@@ -30,10 +30,10 @@ script = ExtResource("1_wtcfe")
 
 [node name="UI" type="Panel" parent="Control"]
 layout_mode = 0
-offset_left = -56.0
-offset_top = -41.0
-offset_right = -16.0
-offset_bottom = -1.0
+offset_left = 19.0
+offset_top = 3.0
+offset_right = 59.0
+offset_bottom = 43.0
 
 [node name="UIVBox" type="VBoxContainer" parent="Control/UI"]
 layout_mode = 0
