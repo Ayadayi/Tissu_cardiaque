@@ -73,6 +73,26 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Calculer"
 
+[node name="HBoxContainer" type="HBoxContainer" parent="Control/UI/UIVBox"]
+layout_mode = 2
+
+[node name="ButtonLeft" type="Button" parent="Control/UI/UIVBox/HBoxContainer"]
+layout_mode = 2
+text = "←"
+
+[node name="ButtonRight" type="Button" parent="Control/UI/UIVBox/HBoxContainer"]
+layout_mode = 2
+text = "→"
+
+[node name="MesuresLabel" type="RichTextLabel" parent="Control"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 448.0
+offset_right = 506.0
+offset_bottom = 689.0
+
 [connection signal="pressed" from="TextureRect/Button" to="Control" method="_on_ouvrir_fichier_pressed"]
 [connection signal="pressed" from="TextureRect/Button" to="Control" method="_on_button_pressed"]
 [connection signal="pressed" from="Control/UI/UIVBox/CalculateButton" to="Control" method="_on_calculate_button_pressed"]
+[connection signal="pressed" from="Control/UI/UIVBox/HBoxContainer/ButtonLeft" to="Control" method="_on_button_left_pressed"]
+[connection signal="pressed" from="Control/UI/UIVBox/HBoxContainer/ButtonRight" to="Control" method="_on_button_right_pressed"]
