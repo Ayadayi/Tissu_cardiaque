@@ -78,11 +78,11 @@ layout_mode = 2
 
 [node name="ButtonLeft" type="Button" parent="Control/UI/UIVBox/HBoxContainer"]
 layout_mode = 2
-text = "←"
+text = "-"
 
 [node name="ButtonRight" type="Button" parent="Control/UI/UIVBox/HBoxContainer"]
 layout_mode = 2
-text = "→"
+text = "+"
 
 [node name="DecalageLabel" type="Label" parent="Control/UI/UIVBox/HBoxContainer"]
 layout_mode = 2
