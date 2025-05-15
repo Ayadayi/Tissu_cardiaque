@@ -84,6 +84,12 @@ text = "←"
 layout_mode = 2
 text = "→"
 
+[node name="DecalageLabel" type="Label" parent="Control/UI/UIVBox/HBoxContainer"]
+layout_mode = 2
+
+[node name="DecalageInput" type="LineEdit" parent="Control/UI/UIVBox/HBoxContainer"]
+layout_mode = 2
+
 [node name="MesuresLabel" type="RichTextLabel" parent="Control"]
 layout_mode = 0
 offset_left = 4.0
