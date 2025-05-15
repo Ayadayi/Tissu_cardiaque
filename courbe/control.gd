@@ -1,5 +1,9 @@
 extends Control
 @onready var mesures_label: RichTextLabel = $MesuresLabel
+@onready var decalage_input: LineEdit = $UIVBox/HBoxContainer/DecalageInput
+@onready var bouton_droite: Button = $UIVBox/HBoxContainer/ButtonRight
+@onready var bouton_gauche: Button = $UIVBox/HBoxContainer/ButtonLeft
+
 
 
 const POINT_SIZE := 3
@@ -10,7 +14,7 @@ var points : Array = [] # points pour la reponse du muscle
 var stim_points : Array = [] #points pour la valeur de stimulation
 
 
-var start_time := 000.0    
+var start_time := 2000.0    
 var end_time := 8000.0
 var density := 0.1 #10% des points
 
