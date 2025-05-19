@@ -176,13 +176,13 @@ func _draw():
 		draw_circle(get_min_point(), POINT_SIZE + 2, Color(1, 0, 0)) # Repos
 		
 		#representation de l'amplitude (milieu vertical entre max et min)
-		var max_p = get_max_point()
-		var min_p = get_min_point()
+		#var max_p = get_max_point()
+		#var min_p = get_min_point()
 		# ligne pour représenter l'amplitude
-		draw_line(max_p, min_p, Color(0.4, 0.8, 1.0), 2)
-		var x_amplitude = (max_p.x + min_p.x) / 2.0
-		var y_amplitude = (max_p.y + min_p.y) / 2.0
-		draw_circle(Vector2(x_amplitude, y_amplitude), POINT_SIZE + 2, Color(0.4, 0.8, 1.0)) 
+		#draw_line(max_p, min_p, Color(0.4, 0.8, 1.0), 2)
+		#var x_amplitude = (max_p.x + min_p.x) / 2.0
+		#var y_amplitude = (max_p.y + min_p.y) / 2.0
+		#draw_circle(Vector2(x_amplitude, y_amplitude), POINT_SIZE + 2, Color(0.4, 0.8, 1.0)) 
 		
 
 ##########################################
