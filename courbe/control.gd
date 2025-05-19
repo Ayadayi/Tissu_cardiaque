@@ -56,6 +56,7 @@ func afficher_mesures():
 	texte += "Coordonnées du point de repos (min) : " + str(min_point) + "\n"
 	texte += "Nombre de points affichés : " + str(points.size()) + "\n"
 	texte += "Plage de temps : " + str(start_time) + " - " + str(end_time) + " ms\n"
+	
 
 	mesures_label.clear()
 	mesures_label.append_text(texte)
@@ -140,13 +141,14 @@ func _on_fichier_selectionne(path: String):
 
 ########################################  draw  ##########################################################
 func _draw():
-	#fond blanc
+	# fond blanc
 	draw_rect(Rect2(Vector2(0, 0), Vector2(width, height)), Color.WHITE)
-	#axe
+
+	# axes
 	draw_line(Vector2(50, 0), Vector2(50, height), Color.NAVY_BLUE, 2)
 	draw_line(Vector2(0, height), Vector2(width, height), Color.NAVY_BLUE, 2)
 
-	#points (reponse du muscle)
+	# points (réponse du muscle)
 	for point in points:
 		draw_circle(point, POINT_SIZE, Color.BLACK)
 	for i in range(points.size() - 1):
@@ -158,9 +160,22 @@ func _draw():
 	for i in range(stim_points.size() - 1):
 		draw_line(stim_points[i], stim_points[i + 1], Color.RED, 2)
 	
-	#min et max
-	draw_circle(get_max_point(), POINT_SIZE + 2, Color(0, 1, 0)) # Pic contraction
-	draw_circle(get_min_point(), POINT_SIZE + 2, Color(1, 0, 0))# Repos
+	# min et max
+	var max_point = get_max_point()
+	var min_point = get_min_point()
+
+	draw_circle(max_point, POINT_SIZE + 2, Color(0, 1, 0)) # Pic contraction
+	draw_circle(min_point, POINT_SIZE + 2, Color(1, 0, 0)) # Repos
+
+	# amplitude (ligne bleue verticale du max au min)
+	if max_point and min_point:
+		var x_amplitude = max_point.x  # même x pour max et min
+		var top = Vector2(x_amplitude, max_point.y)
+		var bottom = Vector2(x_amplitude, min_point.y)
+		draw_line(top, bottom, Color(0, 0, 1), 2)  # ligne bleue
+
+	
+	
 	
 	#representation de l'amplitude (milieu vertical entre max et min)
 		#var max_p = get_max_point()
