@@ -34,9 +34,12 @@ func _ready():
 	
 ############################# afficher les mesures #############################
 func afficher_mesures():
+	mesures_label.bbcode_enabled = true
+
 	var texte = ""
 	var amplitude = get_amplitude()
-	texte += "Amplitude de contraction : " + str(amplitude) + "\n"
+	texte += "[color=light blue]Amplitude de contraction : " + str(amplitude) + "[/color]\n"
+
 
 	var contraction_time = get_contraction_time()
 	texte += "Temps de contraction : " + str(contraction_time) + " ms\n"
@@ -172,20 +175,11 @@ func _draw():
 		var x_amplitude = max_point.x  # même x pour max et min
 		var top = Vector2(x_amplitude, max_point.y)
 		var bottom = Vector2(x_amplitude, min_point.y)
-		draw_line(top, bottom, Color(0, 0, 1), 2)  # ligne bleue
-
-	
-	
-	
-	#representation de l'amplitude (milieu vertical entre max et min)
-		#var max_p = get_max_point()
-		#var min_p = get_min_point()
-		# ligne pour représenter l'amplitude
-		#draw_line(max_p, min_p, Color(0.4, 0.8, 1.0), 2)
-		#var x_amplitude = (max_p.x + min_p.x) / 2.0
-		#var y_amplitude = (max_p.y + min_p.y) / 2.0
-		#draw_circle(Vector2(x_amplitude, y_amplitude), POINT_SIZE + 2, Color(0.4, 0.8, 1.0)) 
+		draw_line(top, bottom, Color(0.4, 0.8, 1.0), 2)  # ligne bleue
 		
+		
+	########################################
+	
 
 ##########################################
 func get_start_of_contraction() -> int:
