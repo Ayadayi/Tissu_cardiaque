@@ -30,11 +30,16 @@ func _ready():
 	bouton_gauche.pressed.connect(self._on_button_left_pressed)
 
 	queue_redraw()
-
+	
+	
+############################# afficher les mesures #############################
 func afficher_mesures():
+	mesures_label.bbcode_enabled = true
+
 	var texte = ""
 	var amplitude = get_amplitude()
-	texte += "Amplitude de contraction : " + str(amplitude) + "\n"
+	texte += "[color=light blue]Amplitude de contraction : " + str(amplitude) + "[/color]\n"
+
 
 	var contraction_time = get_contraction_time()
 	texte += "Temps de contraction : " + str(contraction_time) + " ms\n"
@@ -54,14 +59,18 @@ func afficher_mesures():
 	texte += "Coordonnées du point de repos (min) : " + str(min_point) + "\n"
 	texte += "Nombre de points affichés : " + str(points.size()) + "\n"
 	texte += "Plage de temps : " + str(start_time) + " - " + str(end_time) + " ms\n"
+	
 
 	mesures_label.clear()
 	mesures_label.append_text(texte)
+	
 
+####################### Quand on clique sur le bouton ####################### permet de choisir un fichier
 func _on_ouvrir_fichier_pressed():
 	var file_dialog = get_node("FileDialog")
 	file_dialog.popup_centered()
 
+######################## Quand un fichier est sélectionné #######################
 func _on_fichier_selectionne(path: String):
 	print("Fichier sélectionné : ", path)
 
@@ -79,7 +88,8 @@ func _on_fichier_selectionne(path: String):
 	var max_y := -INF
 	var min_stim := INF
 	var max_stim := -INF
-
+	
+# Première passe : récupérer min/max dans la plage de temps
 	while not file.eof_reached():
 		var line := file.get_line().strip_edges()
 		if line == "":
@@ -98,11 +108,13 @@ func _on_fichier_selectionne(path: String):
 				max_stim = max(max_stim, stim)
 	file.close()
 
+#Protection contre division par zéro
 	if max_y == min_y:
 		max_y += 0.0001
 	if max_stim == min_stim:
 		max_stim += 0.0001
 
+# Deuxième passe : lire les points
 	file = FileAccess.open(path, FileAccess.READ)
 	while not file.eof_reached():
 		var line := file.get_line().strip_edges()
@@ -123,36 +135,61 @@ func _on_fichier_selectionne(path: String):
 					points.append(Vector2(x_scaled, y_scaled))
 					stim_points.append(Vector2(x_scaled, y_stim_scaled))
 	file.close()
-
+#print("Nombre de points affichés : ", points.size())
 	if points.size() > 0:
 		afficher_mesures()
 
 	queue_redraw()
 
+
+########################################  draw  ##########################################################
 func _draw():
+	# fond blanc
 	draw_rect(Rect2(Vector2(0, 0), Vector2(width, height)), Color.WHITE)
+
+	# axes
 	draw_line(Vector2(50, 0), Vector2(50, height), Color.NAVY_BLUE, 2)
 	draw_line(Vector2(0, height), Vector2(width, height), Color.NAVY_BLUE, 2)
 
+	# points (réponse du muscle)
 	for point in points:
 		draw_circle(point, POINT_SIZE, Color.BLACK)
 	for i in range(points.size() - 1):
 		draw_line(points[i], points[i + 1], Color.BLACK, 2)
 
+	# stimulation
 	for point in stim_points:
 		draw_circle(point, POINT_SIZE, Color.RED)
 	for i in range(stim_points.size() - 1):
 		draw_line(stim_points[i], stim_points[i + 1], Color.RED, 2)
+	
+	# min et max
+	var max_point = get_max_point()
+	var min_point = get_min_point()
 
-	draw_circle(get_max_point(), POINT_SIZE + 2, Color(0, 1, 0))
-	draw_circle(get_min_point(), POINT_SIZE + 2, Color(1, 0, 0))
+	draw_circle(max_point, POINT_SIZE + 2, Color(0, 1, 0)) # Pic contraction
+	draw_circle(min_point, POINT_SIZE + 2, Color(1, 0, 0)) # Repos
 
+	# amplitude (ligne bleue verticale du max au min)
+	if max_point and min_point:
+		var x_amplitude = max_point.x  # même x pour max et min
+		var top = Vector2(x_amplitude, max_point.y)
+		var bottom = Vector2(x_amplitude, min_point.y)
+		draw_line(top, bottom, Color(0.4, 0.8, 1.0), 2)  # ligne bleue
+		
+		
+	########################################
+	
+
+##########################################
 func get_start_of_contraction() -> int:
 	for i in range(1, points.size()):
 		if points[i].y < points[i - 1].y:
 			return i - 1
 	return 0
 
+########################################  Min et Max  ##########################################################
+#le point le plus haut
 func get_max_point() -> Vector2:
 	if points.size() == 0:
 		return Vector2.ZERO
@@ -163,6 +200,7 @@ func get_max_point() -> Vector2:
 			max_point = points[i]
 	return max_point
 
+#le point le plus bas
 func get_min_point() -> Vector2:
 	if points.size() == 0:
 		return Vector2.ZERO
@@ -171,12 +209,14 @@ func get_min_point() -> Vector2:
 		if p.y > min_point.y:
 			min_point = p
 	return min_point
-
+	
+#######################################  L'amplitude Max  #########################################################
 func get_amplitude() -> float:
 	var base_y = height
 	var max_y = get_max_point().y
 	return base_y - max_y
 
+########################################  Duree de Contraction ##################################################
 func get_contraction_time() -> float:
 	if points.size() < 2:
 		return 0
@@ -184,13 +224,16 @@ func get_contraction_time() -> float:
 	var peak = get_max_point().x
 	return peak - start
 
+########################################  Duree de decontraction ##################################################
 func get_decontraction_time() -> float:
 	if points.size() < 2:
 		return 0
 	var peak = get_max_point().x
 	var end = points[points.size() - 1].x
 	return end - peak
-
+	
+	
+######################################  Vitesse de Contraction ##################################################
 func get_contraction_speed_percent(x_percent: float, y_percent: float) -> float:
 	if points.size() < 2:
 		return 0
@@ -228,7 +271,9 @@ func get_contraction_speed_percent(x_percent: float, y_percent: float) -> float:
 	if delta_time == 0:
 		return 0
 	return abs(delta_force / delta_time)
-
+	
+	
+######################################  Vitesse de decontraction ##################################################
 func get_decontraction_speed_percent(x_percent: float, y_percent: float) -> float:
 	if points.size() < 2:
 		return 0.0
