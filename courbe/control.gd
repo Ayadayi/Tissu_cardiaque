@@ -15,7 +15,7 @@ var stim_points: Array = [] # points pour la valeur de stimulation
 var start_time := 2000.0    
 var end_time := 8000.0
 var density := 0.1 # 10% des points
-
+##
 func _ready():
 	var file_dialog := FileDialog.new()
 	file_dialog.name = "FileDialog"
