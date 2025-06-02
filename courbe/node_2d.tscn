@@ -102,3 +102,10 @@ offset_bottom = 689.0
 [connection signal="pressed" from="Control/UI/UIVBox/CalculateButton" to="Control" method="_on_calculate_button_pressed"]
 [connection signal="pressed" from="Control/UI/UIVBox/HBoxContainer/ButtonLeft" to="Control" method="_on_button_left_pressed"]
 [connection signal="pressed" from="Control/UI/UIVBox/HBoxContainer/ButtonRight" to="Control" method="_on_button_right_pressed"]
+
+
+
+
+
+
+Enfin, les dernières étapes ont été consacrées à la correction des valeurs calculées, à l’amélioration de l’affichage des résultats dans l’interface, ainsi qu’à la mise au point des interactions utilisateurs (boutons +/-, zones de texte, etc.).
