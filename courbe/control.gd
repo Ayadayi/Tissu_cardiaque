@@ -351,3 +351,10 @@ func _on_button_right_pressed() -> void:
 		var file_dialog = $FileDialog
 		if file_dialog.current_path != "":
 			_on_fichier_selectionne(file_dialog.current_path)
+			
+			
+			
+			
+			
+			
+			
